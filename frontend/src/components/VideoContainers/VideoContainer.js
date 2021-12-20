@@ -35,14 +35,15 @@ export default class VideoContainer extends Component {
     // Periodic timer for reading video resolution.
     this._videoResolutionPeriodicTimer = null;
 
-    this.videoElem = React.createRef();
-    this.audioElem = React.createRef();
+    /*     videoElem = React.createRef();
+    audioElem = React.createRef(); */
   }
 
   componentDidMount() {
     const { audioTrack, videoTrack } = this.props;
 
-    console.log(this.videoElem);
+    const { videoElem } = this.refs;
+    console.log(videoElem);
 
     this._setTracks(audioTrack, videoTrack);
   }
@@ -52,10 +53,12 @@ export default class VideoContainer extends Component {
 
     clearInterval(this._videoResolutionPeriodicTimer);
 
-    if (this.videoElem) {
-      this.videoElem.current.oncanplay = null;
-      this.videoElem.current.onplay = null;
-      this.videoElem.current.onpause = null;
+    const { videoElem } = this.refs;
+
+    if (videoElem) {
+      videoElem.current.oncanplay = null;
+      videoElem.current.onplay = null;
+      videoElem.current.onpause = null;
     }
   }
 
@@ -86,46 +89,49 @@ export default class VideoContainer extends Component {
 
     this._stopVideoResolution();
 
+    const { audioElem, videoElem } = this.refs;
+
     if (audioTrack) {
       const stream = new MediaStream();
 
       stream.addTrack(audioTrack);
-      this.audioElem.srcObject = stream;
+      audioElem.srcObject = stream;
 
-      this.audioElem
+      audioElem
         .play()
         .catch((error) => logger.warn("audioElem.play() failed:%o", error));
 
       this._runHark(stream);
     } else {
-      this.audioElem.srcObject = null;
+      audioElem.srcObject = null;
     }
 
     if (videoTrack) {
       const stream = new MediaStream();
 
       stream.addTrack(videoTrack);
-      this.videoElem.current.srcObject = stream;
+      videoElem.current.srcObject = stream;
 
-      this.videoElem.current.oncanplay = () => this.setState({ videoCanPlay: true });
+      videoElem.current.oncanplay = () => this.setState({ videoCanPlay: true });
 
-      this.videoElem.current.onplay = () => {
+      videoElem.current.onplay = () => {
         this.setState({ videoElemPaused: false });
 
-        this.audioElem
+        audioElem
           .play()
           .catch((error) => logger.warn("audioElem.play() failed:%o", error));
       };
 
-      this.videoElem.current.onpause = () => this.setState({ videoElemPaused: true });
+      videoElem.current.onpause = () =>
+        this.setState({ videoElemPaused: true });
 
-      this.videoElem
+      videoElem
         .play()
         .catch((error) => logger.warn("videoElem.play() failed:%o", error));
 
       this._startVideoResolution();
     } else {
-      this.videoElem.current.srcObject = null;
+      videoElem.current.srcObject = null;
     }
   }
 
@@ -252,7 +258,7 @@ export default class VideoContainer extends Component {
       <div>
         <div></div>
         <video
-          ref={this.videoElem}
+          ref="videoElem"
           className={classnames(styles.video, {
             "is-me": isMe,
             hidden: !videoVisible || !videoCanPlay,
@@ -267,7 +273,7 @@ export default class VideoContainer extends Component {
           controls={false}
         />
         <audio
-          ref={this.audioElem}
+          ref="audioElem"
           autoPlay
           playsInline
           muted={isMe || audioMuted}
@@ -284,7 +290,7 @@ export default class VideoContainer extends Component {
 
 VideoContainer.propTypes = {
   isMe: PropTypes.bool,
-  peer: PropTypes.oneOfType([appPropTypes.Me, appPropTypes.Peer]).isRequired,
+  peer: PropTypes.oneOfType([appPropTypes.Me, appPropTypes.Peer]),
   audioProducerId: PropTypes.string,
   videoProducerId: PropTypes.string,
   audioConsumerId: PropTypes.string,

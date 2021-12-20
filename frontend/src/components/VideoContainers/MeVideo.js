@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import classnames from "classnames";
 import * as cookiesManager from "../../cookiesManager";
 import { withRoomContext } from "../../RoomContext";
 import * as stateActions from "../../redux/stateActions";
 import VideoContainer from "./VideoContainer";
 import * as appPropTypes from "../appPropTypes";
+import Video from "./Video";
 
-export class MeVideo extends Component {
+/* export class MeVideo extends Component {
   constructor(props) {
     super(props);
   }
@@ -22,9 +23,9 @@ export class MeVideo extends Component {
       audioProducer,
       videoProducer,
       onSetStatsPeerId,
+      producers,
     } = this.props;
 
-    console.log(videoProducer);
 
     const videoVisible = Boolean(videoProducer) && !videoProducer.paused;
     return (
@@ -78,6 +79,7 @@ const mapStateToProps = (state) => {
     me: state.me,
     audioProducer: audioProducer,
     videoProducer: videoProducer,
+    producers: state.producers
   };
 };
 
@@ -91,3 +93,49 @@ const mapDispatchToProps = (dispatch) => {
 export default withRoomContext(
   connect(mapStateToProps, mapDispatchToProps)(MeVideo)
 );
+ */
+
+export const MeVideo = (props) => {
+  //Get state from redux store
+  const producers = useSelector((state) => state.producers);
+  const me = useSelector((state) => state.me);
+  const connected = useSelector((state) => state.room.connected);
+
+  //Process data
+  const producersArray = Object.values(producers);
+  const audioProducer = producersArray.find(
+    (producer) => producer.track.kind === "audio"
+  );
+  const videoProducer = producersArray.find(
+    (producer) => producer.track.kind === "video"
+  );
+
+  
+  return (
+    <div>
+{/*       <VideoContainer
+        isMe
+        peer={me}
+        audioProducerId={audioProducer ? audioProducer.id : null}
+        videoProducerId={videoProducer ? videoProducer.id : null}
+        audioRtpParameters={audioProducer ? audioProducer.rtpParameters : null}
+        videoRtpParameters={videoProducer ? videoProducer.rtpParameters : null}
+        audioTrack={audioProducer ? audioProducer.track : null}
+        videoTrack={videoProducer ? videoProducer.track : null}
+        audioCodec={audioProducer ? audioProducer.codec : null}
+        videoCodec={videoProducer ? videoProducer.codec : null}
+        audioScore={audioProducer ? audioProducer.score : null}
+        videoScore={videoProducer ? videoProducer.score : null}
+      /> */}
+      <Video
+        videoTrack={videoProducer ? videoProducer.track : null}
+        audioTrack={audioProducer ? audioProducer.track : null}
+        id={me.id}
+        isMe
+      />
+      {connected && <p>connected</p>}
+    </div>
+  );
+};
+
+export default MeVideo;
