@@ -98,7 +98,7 @@ export default function Video({
     };
   }, [JSON.stringify(videoTrack), JSON.stringify(audioTrack), video.current]);
   return (
-    <div>
+    <React.Fragment>
       <video
         height={"100%"}
         width={"100%"}
@@ -116,6 +116,6 @@ export default function Video({
         controls={false}
         muted={isMe || audioMuted}
       />
-    </div>
+    </React.Fragment>
   );
 }
