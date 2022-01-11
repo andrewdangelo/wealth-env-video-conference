@@ -322,6 +322,8 @@ export default class SFU {
             producerPaused,
           } = request.data;
 
+          console.log(request.data);
+
           try {
             const consumer = await this._recvTransport.consume({
               id,

@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect, useSelector } from "react-redux";
-import classnames from "classnames";
-import * as cookiesManager from "../../cookiesManager";
-import { withRoomContext } from "../../RoomContext";
-import * as stateActions from "../../redux/stateActions";
-import VideoContainer from "./VideoContainer";
-import * as appPropTypes from "../appPropTypes";
 import Video from "./Video";
 
 /* export class MeVideo extends Component {

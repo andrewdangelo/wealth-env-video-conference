@@ -830,6 +830,7 @@ class Room extends EventEmitter
 					sctpCapabilities
 				} = request.data;
 
+
 				// Store client data into the protoo Peer data object.
 				peer.data.joined = true;
 				peer.data.displayName = displayName;
@@ -1546,6 +1547,8 @@ class Room extends EventEmitter
 		//   fail to associate the RTP stream.
 
 		// NOTE: Don't create the Consumer if the remote Peer cannot consume it.
+
+
 		if (
 			!consumerPeer.data.rtpCapabilities ||
 			!this._mediasoupRouter.canConsume(
@@ -1653,7 +1656,7 @@ class Room extends EventEmitter
 				'consumer "trace" event [producerId:%s, trace.type:%s, trace:%o]',
 				consumer.id, trace.type, trace);
 		});
-
+ 
 		// Send a protoo request to the remote Peer with Consumer parameters.
 		try
 		{
