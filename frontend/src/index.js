@@ -46,6 +46,7 @@ async function run() {
   const parameters = urlParser.searchParams;
 
   const produce = parameters.get("produce") !== "false";
+  const consume = parameters.get("consume") !== 'false';
   const forceTcp = parameters.get("forceTcp") === "true";
   const displayName = parameters.get("displayName");
   const muted = parameters.get('muted') === 'true';
@@ -66,6 +67,7 @@ async function run() {
     device,
     produce,
     forceTcp,
+    consume
   });
 
   ReactDOM.render(
